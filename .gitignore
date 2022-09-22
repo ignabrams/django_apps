@@ -1,0 +1,13 @@
+# Dajango
+**/*.log
+**/*.pot
+**/*.pyc
+**/__pychache__
+**/deb.sqlite3
+
+# Backup files
+**/*.bak
+
+# Sublime Text #
+**/*.sublime-workspace
+**/*.sublime-project
