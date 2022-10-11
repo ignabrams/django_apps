@@ -11,8 +11,8 @@ class PostAdmin(admin.ModelAdmin):
 	data_hierarchy = 'publish'
 	ordering = ('status' ,'publish')
 
-	@admin.register(Comment)
-	class CommentAdmin(admin.ModelAdmin):
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
 		list_display = ('name', 'email', 'post', 'created', 'active')
 		list_filter = ('active', 'created', 'updated')
-		search_fields = ('name', 'email', 'active')
+		search_fields = ('name', 'email', 'body')

@@ -1,4 +1,3 @@
-
 {% extends "blog/base.html" %}
 
 {% block title %}My Blog{% endblock %}
@@ -6,7 +5,7 @@
 {% block content %}
 	<h1>My Blog</h1>
 {% if tag %}
-	<h2>Post tagged with " {{ tag.name }}"</h2>
+	<h2>Post tagged with "{{ tag.name }}"</h2>
 {% endif %}
 	{% for post in posts %}
 	<h2>
@@ -15,17 +14,16 @@
 	<p class="tags">
 	Tags: 
 	{% for tag in post.tags.all %}
-	<a href="{% url "blog:post_list_by_tag" tag.slug %}">
-		{{ tag.name }}
-	</a>
+		<a href="{% url "blog:post_list_by_tag" tag.slug %}">
+			{{ tag.name }}
+		</a>
 	{% if not forloop.last %}, {% endif %}
 {% endfor %}
-   </p>
-	{{ post.tags.all|join: ", " }}</p>
+</p>
 	<p class="date">
 	  Published {{ post.publish }} by {{ post.author }}
 	</p>
 	{{ post.body|truncatewords:30|linebreaks }}
   {% endfor %}
-  {% include "pagination.html" with page=posts %}
+ {% include "pagination.html" with page=posts %}
 {% endblock %}
