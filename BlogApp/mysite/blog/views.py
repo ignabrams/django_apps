@@ -5,7 +5,9 @@ from django.db.models import Count
 from django.core.mail import send_mail
 from taggit.models import Tag 
 from .models import Post, Comment
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
+from django.contrib.postgres.search import SearchVector
+
 # Create your views here.
 
 #class PostListView(ListView):
@@ -13,6 +15,17 @@ from .forms import EmailPostForm, CommentForm
 	#context_objects_name = 'posts'
 	#paginate_by = 3
 	#template_name = 'blog/post/list.html'
+
+def post_search(request):
+		form = SearchForm()
+		query = None
+		results = []
+		if 'query' in requet.GET:
+			form =SearchForm(request.GET)
+			if form.is_valid():	
+				query = forms.cleaned_data['query']
+				results = Post.published.annotate(search=SearchVector('title','body'),).filter(search=query)
+	return render(request, 'blog/post/search.html', {'form': form, 'query': query, 'results': results})	
 
 def post_list(request, tag_slug=None):
 	object_list = Post.published.all()
@@ -82,4 +95,3 @@ def post_share(request, post_id):
 
 	return render(request, 'blog/post/share.html', {'post': post, 'form': form, 'sent': sent})	
 	
-
