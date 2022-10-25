@@ -2,11 +2,11 @@
 {% load blog_tags %}
 <!DOCTYPE html>
 <html>
-<head>
-	<title>{% block title %}{% endblock %}</title>
-	<link href="{% static "css/blog.css" %}" rel ="stylesheet">
+	<head>
+		<title>{% block title %}{% endblock %}</title>
+		<link href="{% static "css/blog.css" %}" rel ="stylesheet">
 	</head>"
-<body>
+	<body>
 	<div id="content">
 		{% block content %}
 		{% endblock %}
@@ -24,9 +24,22 @@
 	<ul>
 		{% for post in most_commented_posts %}
 	<li>
-		<a href="{{ post.get_absolute_url }}">{{ post.title }} </a>
+		{% with comments.count as total_comments %}
+		<p>
+		<a href="{{ post.get_absolute_url }}">{{ post.title }} </a> has {{ post.total_comments }} comment{{ post.total_comments|pluralize }}.		</p>
+		{% endwith %}
+	</li>
+		{% endfor %}
+	</ul>
+	<h3>Leaderboard</h3>
+	{% get_most_posts_by_user as leaderboard %}
+	<ul>
+	{% for user in leaderboard %}
+	<li>
+		<p> {{ user.username }} -- {{ user.total_posts }}</p>
 	</li>
 	{% endfor %}
 	</ul>
+	</div>
 </body>
 </html>

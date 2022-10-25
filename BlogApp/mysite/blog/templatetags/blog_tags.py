@@ -2,7 +2,9 @@ from django import template
 from ..models import Post 
 from django.db.models import Count
 from django.utils.safestring import mark_safe
+from django.contrib.auth.models import User
 import markdown
+
 
 register = template.Library()
 
@@ -16,10 +18,14 @@ def show_latest_posts(count=5):
 	return {'latest_posts': latest_posts}
 
 @register.simple_tag 
-def get_most_commented_posts(count=5):
+def get_most_commented_posts(count=3):
 	return Post.published.annotate(
 		total_comments=Count('comments')).order_by('-total_comments')[:count]
 
 @register.filter(name='markdown')
 def markdown_format(text):
 	return mark_safe(markdown.markdown(text))
+
+@register.simple_tag
+def get_most_posts_by_user(count=3):
+	return User.objects.annotate(total_posts=Count('blog_posts')).order_by('-total_posts')[:count]

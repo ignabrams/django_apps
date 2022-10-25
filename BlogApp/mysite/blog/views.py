@@ -6,7 +6,8 @@ from django.core.mail import send_mail
 from taggit.models import Tag 
 from .models import Post, Comment
 from .forms import EmailPostForm, CommentForm, SearchForm
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.postgres.search import TrigramSimilarity 
 
 # Create your views here.
 
@@ -17,19 +18,25 @@ from django.contrib.postgres.search import SearchVector
 	#template_name = 'blog/post/list.html'
 
 def post_search(request):
-		form = SearchForm()
-		query = None
-		results = []
-		if 'query' in requet.GET:
-			form =SearchForm(request.GET)
-			if form.is_valid():	
-				query = forms.cleaned_data['query']
-				results = Post.published.annotate(search=SearchVector('title','body'),).filter(search=query)
-	return render(request, 'blog/post/search.html', {'form': form, 'query': query, 'results': results})	
+	form = SearchForm()
+	query = None
+	results = []
+	if 'query' in request.GET:
+		form =SearchForm(request.GET)
+		if form.is_valid():
+			query = form.cleaned_data['query']
+			search_vector = SearchVector('title', weight='A') + \
+							SearchVector('body', weight='B')
+			search_query = SearchQuery(query)
+			results = Post.published.annotate(similarity=TrigramSimilarity('title', query),).filter(similarity__gt=0.1).order_by('-similarity')
+	return render(request, 'blog/post/search.html',
+		{'form': form, 
+		'query': query, 
+		'results': results})
 
 def post_list(request, tag_slug=None):
 	object_list = Post.published.all()
-	paginator = Paginator(object_list, 3) # 3post in each page
+	paginator = Paginator(object_list, 3) # 3 post in each page
 	page = request.GET.get('page')
 	tag = None
 
