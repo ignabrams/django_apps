@@ -32,14 +32,7 @@
 		{% endfor %}
 	</ul>
 	<h3>Leaderboard</h3>
-	{% get_most_posts_by_user as leaderboard %}
-	<ul>
-	{% for user in leaderboard %}
-	<li>
-		<p> {{ user.username }} -- {{ user.total_posts }}</p>
-	</li>
-	{% endfor %}
-	</ul>
+	{% show_leaderboard %}	
 	</div>
 </body>
 </html>

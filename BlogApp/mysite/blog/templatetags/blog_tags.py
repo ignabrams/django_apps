@@ -26,6 +26,7 @@ def get_most_commented_posts(count=3):
 def markdown_format(text):
 	return mark_safe(markdown.markdown(text))
 
-@register.simple_tag
-def get_most_posts_by_user(count=3):
-	return User.objects.annotate(total_posts=Count('blog_posts')).order_by('-total_posts')[:count]
+@register.inclusion_tag('blog/post/show_leaderboard.html')
+def show_leaderboard(count=3):
+	User.objects.annotate(total_posts=Count('blog_posts')).order_by('-total_posts')[:count]
+	return {'leaderboard', leaderboard}
