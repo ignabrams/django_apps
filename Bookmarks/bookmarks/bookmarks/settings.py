@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-a$c*l4%_-v)5(nqd+_$p*dmoxvx$9a*+=z(hu0sd99a%p)*buj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mysite.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -133,4 +135,15 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend', 
+    'account.authentication.EmailAuthBackend',
+    'social_core.backends.google.GoogleOAuth2',
+
+
+]
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '192695124215-ecj2mjk6u83uhnrkjkb6vnh26adnr7br.apps.googleusercontent.com' # Google Consumer Key
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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' # Google Consumer Secret
 
