@@ -5,7 +5,7 @@
 {% block content %}
   <h1>{{ image.title }}</h1>
   {% load thumbnail %}
-  <a href="{{ image.image.url }}" >
+  <a href="{{ image.image.url }}">
   	<img src="{% thumbnail image.image 300x0 %}" class="image-detail">
   </a>
   {% with total_likes=image.users_like.count users_like=image.users_like.all %}
@@ -40,31 +40,32 @@
 			{% endfor %}
 		</div>
 	{% endwith %}
+{% endblock %}
 	
-	{% block domready %}
-		$('a.like').click(function(e){
-			e.preventDefault();
-			$.post('{% url "images:like" %}',
-			  {
-					id: $(this).data('id'),
-					action: $(this).data('action')
-			  },
-				function(data){
-					if (data['status'] == 'ok')
-					{
-						var previous_action = $('a.like').data('action');
-
-						// toggle data-action
-						$('a.like').data('action', previous_action == 'like' ? 'unlike' : 'like');
-						// toggle link text
-						$('a.like').text(previous_action == 'like' ? 'Unlike' : 'Like');
-
-						// update total likes
-						var previous_likes = parseInt($('span.count .total').text());
-						$('span.count .total').text(previous_action == 'like' ? previous_likes + 1 : previous_likes -1);
-					}
+{% block domready %}
+	$('a.like').click(function(e){
+		e.preventDefault();
+		$.post('{% url "images:like" %}',
+			{
+				id: $(this).data('id'),
+				action: $(this).data('action')
+			},
+			function(data){
+				if (data['status'] == 'ok')
+				{
+					var previous_action = $('a.like').data('action');
+					
+					// toggle data-action
+					$('a.like').data('action', previous_action == 'like' ? 'unlike' : 'like');
+					// toggle link text
+					$('a.like').text(previous_action == 'like' ? 'Unlike' : 'Like');
+					
+					// update total likes
+					var previous_likes = parseInt($('span.count .total').text());
+					$('span.count .total').text(previous_action == 'like' ?
+					previous_likes + 1 : previous_likes - 1);
 				}
-			);
-		});
-	{% endblock %}
+			}
+		);
+	});
 {% endblock %}

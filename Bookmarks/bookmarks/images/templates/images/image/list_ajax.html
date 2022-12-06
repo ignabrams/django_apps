@@ -2,16 +2,16 @@
 
 {% for image in images %}
   <div class="image">
-	<a href="{{ image.get_absolute_url }}">
-	  {% thumbnail image.image 300x300 crop="smart" as im %}
-	  <a href="{{ image.get_absolute_url }}">
-		<img src="{{ im.url }}">
-	  </a>
-	</a>
-	<div class="info">
-	  <a href="{{ image.get_absolute_url }}" class="title">
-		{{ image.title }}
-	  </a>
-	</div>
+		<a href="{{ image.get_absolute_url }}">
+	  	{% thumbnail image.image 300x300 crop="smart" as im %}
+	  	<a href="{{ image.get_absolute_url }}">
+				<img src="{{ im.url }}">
+	  	</a>
+		</a>
+		<div class="info">
+	 		<a href="{{ image.get_absolute_url }}" class="title">
+				{{ image.title }}
+	  	</a>
+		</div>
   </div>
 {% endfor %}
