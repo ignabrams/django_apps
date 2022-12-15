@@ -5,10 +5,11 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm, UserRegistrationForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Contact, Action
+from .models import Profile, Contact
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from actions.models import Action
 from actions.utils import create_action
 
 
@@ -42,18 +43,18 @@ def dashboard(request):
 	if following_ids:
 		# If user is following others, retrieve only their actions
 		actions = actions.filter(user_id__in=following_ids)
-	actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
+		actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10]
 	
 	return render(request, 'account/dashboard.html', {'section': 'dashboard', 'actions': actions})
 
 def register(request):
 	if request.method == 'POST':
-		user_form = UserRegistrationForm(request.POST)
-		if user_form.is_valid():
+		user_from = UserRegistrationForm(request.POST)
+		if user_from.is_valid():
 			# Create a new user object but avoid saving it yet
-			new_user = user_form.save(commit=False)
+			new_user = user_from.save(commit=False)
 			# Set the chosen password
-			new_user.set_password(user_form.cleaned_data['password'])
+			new_user.set_password(user_from.cleaned_data['password'])
 			# Save the User object
 			new_user.save()
 			#create the user Profile
@@ -63,25 +64,25 @@ def register(request):
 						  'account/register_done.html',
 						 {'new_user': new_user})
 	else:
-		user_form = UserRegistrationForm()
-	return render(request, 'account/register.html', {'user_form': user_form})
+		user_frm = UserRegistrationForm()
+	return render(request, 'account/register.html', {'user_from': user_from})
 
 @login_required
 def edit(request):
 	if request.method == 'POST':
-		user_form = UserEditForm(instance=request.user, data=request.POST)
+		user_from = UserEditForm(instance=request.user, data=request.POST)
 		profile_form = ProfileEditForm( instance=request.user.profile, data=request.POST, files=request.FILES)
-		if user_form.is_valid() and profile_form.is_valid():
-			user_form.save()
-			profile_form.save()
+		if user_from.is_valid() and profile_form.is_valid():
+			user_from.save()
+			profile_from.save()
 			messages.success(request, 'Profile updated successfully')
 		else:
 			messages.error(request, 'Error updating your profile')
 			
 	else:
-		user_form = UserEditForm(instance=request.user)
+		user_from = UserEditForm(instance=request.user)
 		profile_form = ProfileEditForm(instance=request.user.profile)
-	return render(request, 'account/edit.html', {'user_form': user_form, 'profile_form': profile_form})
+	return render(request, 'account/edit.html', {'user_from': user_from, 'profile_form': profile_form})
 
 @login_required
 def user_list(request):
@@ -103,10 +104,10 @@ def user_follow(request):
 		try:
 			user = User.objects.get(id=user_id)
 			if action == 'follow':
-				Contact.objects.get_or_create(user_form=request.user, user_to=user)
+				Contact.objects.get_or_create(user_from=request.user, user_to=user)
 				create_action(request.user, 'is following', user)
 			else:
-				Contact.objects.filter(user_form=request.user, user_to=user).delete()
+				Contact.objects.filter(user_from=request.user, user_to=user).delete()
 			return JsonResponse({'status':'ok'})
 		except User.DoesNotExist:
 			return JsonResponse({'status':'error'})
