@@ -26,6 +26,8 @@ urlpatterns = [
 
 	# Lab 06
 	path('users/', views.user_list, name='user_list'),
+	path('users/follow/', views.user_follow, name='user_follow'),
+	# the path url pattern below (which we've already create) has to come after user_follow
 	path('users/<username>/', views.user_detail, name='user_detail'),
 
 
