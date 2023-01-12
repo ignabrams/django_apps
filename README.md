@@ -1,8 +1,7 @@
-**Ignacio Abrams 
-CIS major in University of Dayton
-20 years old**
+**Ignacio Abrams**
+**CIS major in University of Dayton**
 
-**CPS 242 - Web Development **
+**CPS 242 - Web Development**
 
 **Prokect list:** 
 
