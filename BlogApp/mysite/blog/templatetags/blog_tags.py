@@ -28,5 +28,5 @@ def markdown_format(text):
 
 @register.inclusion_tag('blog/post/show_leaderboard.html')
 def show_leaderboard(count=3):
-	User.objects.annotate(total_posts=Count('blog_posts')).order_by('-total_posts')[:count]
-	return {'leaderboard', leaderboard}
+	leaderboard = User.objects.annotate(total_posts=Count('blog_posts')).order_by('-total_posts')[:count]
+	return {'leaderboard': leaderboard}

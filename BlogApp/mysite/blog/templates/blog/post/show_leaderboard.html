@@ -1,0 +1,7 @@
+<ul>
+  {% for user in leaderboard %}
+  <li>
+      <p>{{ user.username }} -- {{ user.total_posts }}</p>
+  </li>
+  {% endfor %}
+</ul>

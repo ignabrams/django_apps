@@ -22,17 +22,14 @@ def post_search(request):
 	query = None
 	results = []
 	if 'query' in request.GET:
-		form =SearchForm(request.GET)
+		form = SearchForm(request.GET)
 		if form.is_valid():
 			query = form.cleaned_data['query']
 			search_vector = SearchVector('title', weight='A') + \
 							SearchVector('body', weight='B')
 			search_query = SearchQuery(query)
 			results = Post.published.annotate(similarity=TrigramSimilarity('title', query),).filter(similarity__gt=0.1).order_by('-similarity')
-	return render(request, 'blog/post/search.html',
-		{'form': form, 
-		'query': query, 
-		'results': results})
+	return render(request, 'blog/post/search.html', {'form': form, 'query': query, 'results': results})
 
 def post_list(request, tag_slug=None):
 	object_list = Post.published.all()
@@ -41,10 +38,10 @@ def post_list(request, tag_slug=None):
 	tag = None
 
 	if tag_slug:
-			tag = get_object_or_404(Tag, slug=tag_slug)
-			object_list = object_list.filter(tags__in=[tag])
+		tag = get_object_or_404(Tag, slug=tag_slug)
+		object_list = object_list.filter(tags__in=[tag])
 		
-			paginator = Paginator(object_list, 3) # 3 posts in each page
+		paginator = Paginator(object_list, 3) # 3 posts in each page
 	try:
 		posts = paginator.page(page)
 	except PageNotAnInteger:
@@ -53,8 +50,12 @@ def post_list(request, tag_slug=None):
 	except EmptyPage:
 		 # If page is out of range, return the last page
 		 posts = paginator.page(paginator.num_pages)
-
-	return render(request, 'blog/post/list.html', {'page': page, 'posts': posts,'tag': tag})
+	
+	return render(request, 
+			   	  'blog/post/list.html', 
+				  {'page': page, 
+	   			  'posts': posts,
+				  'tag': tag,})
 
 def post_detail(request, year, month, day, slug_post):
 	post = get_object_or_404(Post, slug=slug_post, status='published', publish__year=year, publish__month=month, publish__day=day)
