@@ -74,7 +74,7 @@ def edit(request):
 		profile_form = ProfileEditForm( instance=request.user.profile, data=request.POST, files=request.FILES)
 		if user_from.is_valid() and profile_form.is_valid():
 			user_from.save()
-			profile_from.save()
+			profile_form.save()
 			messages.success(request, 'Profile updated successfully')
 		else:
 			messages.error(request, 'Error updating your profile')
@@ -89,10 +89,6 @@ def user_list(request):
 	users = User.objects.filter(is_active=True)
 	return render(request,'account/user/list.html', {'section': 'people', 'users': users})
 
-@login_required
-def user_detail(request, username):
-	user = get_object_or_404(User, username=username, is_active=True)
-	return render(request, 'account/user/detail.html', {'section': 'people', 'user': user})
 
 @ajax_required
 @require_POST
@@ -112,3 +108,8 @@ def user_follow(request):
 		except User.DoesNotExist:
 			return JsonResponse({'status':'error'})
 	return JsonResponse({'status':'error'})
+
+@login_required
+def user_detail(request, username):
+	user = get_object_or_404(User, username=username, is_active=True)
+	return render(request, 'account/user/detail.html', {'section': 'people', 'user': user})
